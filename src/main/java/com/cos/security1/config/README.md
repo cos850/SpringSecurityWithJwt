@@ -33,7 +33,7 @@ public void configureViewResolvers(ViewResolverRegistry registry) {
 }
 ```
 
-## 1. SecurityConfig
+## 2. SecurityConfig
 - [참고 - springDoc: Security](https://docs.spring.io/spring-boot/docs/2.0.0.M4/reference/html/boot-features-security.html)
    
 SpringSecurity를 사용하는 경우 기본적으로 단일 사용자로 구성해 basic 인증을 수행한다.   
@@ -43,7 +43,7 @@ Using generated security password: 109f44f6-2684-4206-93f1-18a658a532e4
 ```
 기본적인 보안 사용 시 특정 url로 접근 시 로그인 전인 경우 "/login" 페이지로 리다이렉트 되어 기본 로그인 화면을 적용할 수 있고, "/logout" url 호출 시 로그아웃 처리된다.   
 
-### 1-1. @EnableWebSecurity
+### 2-1. @EnableWebSecurity
 ```@EnableWebSecurity``` 어노테이션을 추가하면 기본 웹 보안 구성이 꺼지면서 사용자가 정의한 보안 규칙을 적용한다.   
 ```@WebSecurityConfigurerAdapter```를 상속받은 클래스에서 함수를 오버라이드해서 사용했지만 이젠 따로 ```Bean```을 등록해서 사용해야하는 것으로 변경되었다. (```WebSecurityConfigurerAdapter disabled```)   
 
@@ -56,13 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) {
         http.csrf().disable();
         http.autorizeRequests()
-            .antMatchers("/user/**").authenticated()
-            .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-            .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-            .anyRequest().permitAll()
+            .antMatchers("/user/**").authenticated()   // "/user" 하위 페이지는 로그인해야 접근 가능
+            .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")   // "/manager" 하위 페이지는 ADMIN 과 MANAGER 권한이 있는 사용자만 접근 가능
+            .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")   // "/admin" 하위 페이지는 ADMIN 권한이 있는 사용자만 접근 가능
+            .anyRequest().permitAll()   // 그 외 다른 요청은 모두 허용
             .and()
             .formLogin()
-            .loginPage("/login")
+            .loginPage("/login")   // 리다이렉트할 로그인 페이지
     }
 }
 ```
