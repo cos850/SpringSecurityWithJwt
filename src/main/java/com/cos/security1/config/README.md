@@ -68,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ```
 #### 예시 - 변경 예시
 ```
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
